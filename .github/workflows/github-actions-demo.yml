@@ -8,5 +8,5 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1 #brings the code down to the computer that executes the pipeline
       - run: cd backend && npm i # install all the packages that we have in this backend
-      - run: cd backend && npm build # to build the code
+      - run: cd backend && npm run build # to build the code
       
