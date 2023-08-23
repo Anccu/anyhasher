@@ -42,6 +42,11 @@ jobs:
       - name: Checkout # it is necessary to check out again every single time
         uses: actions/checkout@v1
 
+      - name: Setup Node # so you can control the version you are using
+        uses: actions/setup-node@v1
+        with: 
+          node-version: 16.x
+
       - name: Cache Node Modules # won't download again, we will benefit from the previous cache that was saved
         id: cache
         uses: actions/cache@v2
