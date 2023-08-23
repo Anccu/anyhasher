@@ -40,6 +40,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       
+      - name: Checkout # it is necessary to check out again every single time
+        uses: actions/checkout@v1
 
       - name: Cache Node Modules # won't download again, we will benefit from the previous cache that was saved
         id: cache
@@ -48,11 +50,8 @@ jobs:
           path: node_modules
           key: node-modules-cache
 
-      - name: Checkout # it is necessary to check out again every single time
-        uses: actions/checkout@v1
-
       - name: Install Dependencies # if false re run again, see the previous cache, steps > id=cache
-        if: steps.cache.outputs.cache-hit != 'true' 
+        # if: steps.cache.outputs.cache-hit != 'true' 
         run: cd backend && npm i
 
       - name: Lint the code # we will finally run the lint
