@@ -39,8 +39,7 @@ jobs:
     needs: [build] # it will run after it has built the code ,  see above
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout # it is necessary to check out again every single time
-        uses: actions/checkout@v1
+      
 
       - name: Cache Node Modules # won't download again, we will benefit from the previous cache that was saved
         id: cache
@@ -48,6 +47,9 @@ jobs:
         with:
           path: node_modules
           key: node-modules-cache
+
+      - name: Checkout # it is necessary to check out again every single time
+        uses: actions/checkout@v1
 
       - name: Install Dependencies # if false re run again, see the previous cache, steps > id=cache
         if: steps.cache.outputs.cache-hit != 'true' 
