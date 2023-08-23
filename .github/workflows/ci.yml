@@ -2,7 +2,7 @@ name: Continuous Integrations
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push]
 jobs:
-  compile:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Cache Node Modules # so we don't have to download again, if it is already there it just uses the packages
@@ -35,3 +35,23 @@ jobs:
           name: backend-artifact # I can use the name to retrieve it when needed
           path: backend/build/artifact.zip
       
+  lint:
+    needs: [build] # it will run after it has built the code ,  see above
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout # it is necessary to check out again every single time
+        uses: actions/checkout@v1
+
+      - name: Cache Node Modules # won't download again, we will benefit from the previous cache that was saved
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node-modules-cache
+
+      - name: Install Dependencies # 
+        if: steps.cache.outputs.cache-hit != 'true' # if false re run again, see the previous cache, steps > id=cache
+        run: cd backend && npm i
+
+      - name: Lint the code
+        run: cd backend && npm run lint # we will finally run the lint
