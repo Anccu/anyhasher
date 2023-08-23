@@ -5,8 +5,33 @@ jobs:
   compile:
     runs-on: ubuntu-latest
     steps:
+      - name: Cache Node Modules # so we don't have to download again, if it is already there it just uses the packages
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node-modules-cache
+
       - name: Checkout
         uses: actions/checkout@v1 #brings the code down to the computer that executes the pipeline
-      - run: cd backend && npm i # install all the packages that we have in this backend
-      - run: cd backend && npm run build # to build the code
+
+      - name: Setup Node # so you can control the version you are using
+        uses: actions/setup-node@v1
+        with: 
+          node-version: 16.x
+
+      - name: Install Deps
+        run: cd backend && npm i # install all the packages that we have in this backend
+
+      - name: Build
+        run: cd backend && npm run build # to build the code
+
+      - name: Generate Artifact # turn the generated build folder and turn into an artifact
+        run: cd backend/build && zip -r artifact.zip ./ -x '*.git'
+
+      - name: store artifact # if we don't save the generated artifact it will die when the build finishes
+        uses: actions/upload-artifact@v2
+        with: 
+          name: backend-artifact # I can use the name to retrieve it when needed
+          path: backend/build/artifact.zip
       
