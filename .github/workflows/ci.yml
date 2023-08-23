@@ -51,7 +51,7 @@ jobs:
           key: node-modules-cache
 
       - name: Install Dependencies # if false re run again, see the previous cache, steps > id=cache
-        # if: steps.cache.outputs.cache-hit != 'true' 
+        if: steps.cache.outputs.cache-hit != 'true'
         run: cd backend && npm i
 
       - name: Lint the code # we will finally run the lint
